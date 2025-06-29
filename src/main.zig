@@ -32,7 +32,7 @@ pub fn main() !void {
 
     while (!rl.windowShouldClose()) {
         if (bf.end) {
-            rl.closeWindow();
+            break;
         }
 
         bf.interpret();
