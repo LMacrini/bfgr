@@ -25,7 +25,7 @@ pub fn main() !void {
         std.process.exit(1);
     };
 
-    const program = try fileToProgram(allocator, file_path);
+    const program = fileToProgram(allocator, file_path) catch |err| std.process.fatal("{}", .{err});
     defer allocator.free(program);
 
     var bf: BrainFuck = .init(program);
