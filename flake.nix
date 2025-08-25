@@ -3,22 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = {
     self,
     nixpkgs,
-    flake-utils,
-  }:
-    flake-utils.lib.eachDefaultSystem
-    (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-    in {
-      devShells.default = import ./devShell pkgs;
-      formatter = pkgs.alejandra;
+  }: let
+    forAllSystems = f: builtins.mapAttrs f nixpkgs.legacyPackages;
+  in {
+    devShells = forAllSystems (system: pkgs: {
+      default = import ./devShell pkgs;
     });
+    formatter = forAllSystems (system: pkgs: pkgs.alejandra);
+  };
 }

@@ -1,4 +1,9 @@
-{pkgs, lib, stdenv, ...}: let
+{
+  pkgs,
+  lib,
+  stdenv,
+  ...
+}: let
   linuxLibs = with pkgs; [
     libGL
     xorg.libX11
@@ -14,15 +19,24 @@
     libxkbcommon
   ];
 
-  linuxPkgs = with pkgs; [
-    wayland-scanner
-  ] ++ linuxLibs;
-in pkgs.mkShell {
-  name = "bfgr";
+  linuxPkgs = with pkgs;
+    [
+      wayland-scanner
+    ]
+    ++ linuxLibs;
+in
+  pkgs.mkShell {
+    name = "bfgr";
 
-  packages = with pkgs; [
-    zig
-  ] ++ linuxPkgs;
+    packages = with pkgs;
+      [
+        zig
+        zls
+      ]
+      ++ linuxPkgs;
 
-  LDD_LIBRARY_PATH = if stdenv.isLinux then lib.makeLibraryPath linuxLibs else null;
-}
+    LDD_LIBRARY_PATH =
+      if stdenv.isLinux
+      then lib.makeLibraryPath linuxLibs
+      else null;
+  }
